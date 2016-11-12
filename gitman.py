@@ -12,15 +12,21 @@ else:
     with open(os.path.join(os.environ['HOME'], '.gitman'), 'r') as cf:
         GIT_TOKEN = cf.readline()
 
-VALID_ARGS = {
-    'list': git_list,
-    'setup': git_setup,
-}
 
 parser = argparse.ArgumentParser(description='Gitman - Github repository manager')
-parser.add_argument('method', help='Action to take.', choices=VALID_ARGS.keys())
+subparser = parser.add_subparsers(dest="method")
+
+list_parser = subparser.add_parser('list', help="List the repositories of the user.",
+                                   description="Gitman - List: list the repositories of the user")
+
+setup_parser = subparser.add_parser('setup', help="Setup user credentials.")
 
 args = parser.parse_args()
+
+VALID_ARGS = {
+    'list': git_list,
+    'setup': git_setup
+}
 
 try:
     VALID_ARGS[args.method](GIT_TOKEN, args)
