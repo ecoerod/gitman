@@ -1,11 +1,11 @@
 #! /usr/bin/env python3
 
 import os
-from sys import argv
-from git_functions import git_list, git_setup, git_help
+import argparse
+from git_functions import git_list, git_setup
 
 
-if not os.path.exists(os.path.join(os.environ["HOME"], '.gitman')):
+if not os.path.exists(os.path.join(os.environ['HOME'], '.gitman')):
     # print("Doesn't exist")
     git_setup()
 else:
@@ -17,10 +17,12 @@ VALID_ARGS = {
     'setup': git_setup,
 }
 
-if len(argv) >= 2:
-    try:
-        VALID_ARGS[argv[1]](GIT_TOKEN, argv[2:])
-    except IndexError:
-        VALID_ARGS[argv[1]](GIT_TOKEN, [])
-    except ValueError:
-        git_help()
+parser = argparse.ArgumentParser(description='Gitman - Github repository manager')
+parser.add_argument('method', help='Action to take.', choices=VALID_ARGS.keys())
+
+args = parser.parse_args()
+
+try:
+    VALID_ARGS[args.method](GIT_TOKEN, args)
+except:
+    parser.print_usage()
