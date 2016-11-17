@@ -1,9 +1,9 @@
 from setuptools import setup
 
 setup(
-    name='gitman',
+    name='github-manager',
     version='0.1',
-    description='Simple CLI Github Repository Manager',
+    description='Gitman - Simple CLI Github Repository Manager',
     url='https://github.com/Nelthorim/gitman',
     author='Eduardo Coello Rodriguez',
     author_email='ecoerod@gmail.com',
@@ -18,6 +18,14 @@ setup(
         'console_scripts': [
             'gitman = gitman.__main__:main'
         ]
-    }
+    },
+
+    classifiers=[
+        'Development Status :: 4 - Beta',
+        'Intended Audience :: Developers',
+        'Topic :: Software Development :: Build Tools',
+        'License :: OSI Approved :: MIT License',
+        'Programming Language :: Python :: 3',
+    ]
 
 )
