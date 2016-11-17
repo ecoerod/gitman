@@ -1,3 +1,24 @@
-# gitman - Github repository handler
+# Gitman - Github repository handler
 
-Work in progress
+## Requirements
+- Python 3.x
+- Requests: `pip install requests`
+- Github OAuth authentication token with the `repos` flag enabled (for actions that require user authentication)
+
+## Installation
+For now, put the two *.py files in your $PATH.
+Figuring out the correct way to do this.
+
+## Usage
+Gitman currently provides three commands:
+- `setup`: Creates an authentication token file in the users $HOME. Subject to change.
+- `list`: Lists the repositories of a user, either specified with the `--user` flag or defaulting to the authenticated user.
+- `clone`: Clones a specified repository (formatted `<user>/<repo>`, defaulting to the authenticated user if `<user>/` not present) in the current working directory.
+
+## TODO
+- Create repo functionality
+- (Maybe) delete repo functionality. Figuring out how to safely implement this.
+- Extract parser help strings to locale files.
+
+## License
+This project is licensed under the terms of the MIT license (see LICENSE.md for further details).
