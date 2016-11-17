@@ -6,8 +6,7 @@
 - Github OAuth authentication token with the `repos` flag enabled (for actions that require user authentication)
 
 ## Installation
-For now, put the two *.py files in your $PATH.
-Figuring out the correct way to do this.
+`pip install github-manager` (different name for conflict reasons)
 
 ## Usage
 Gitman currently provides three commands:
