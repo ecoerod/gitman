@@ -2,7 +2,7 @@
 
 ## Requirements
 - Python 3.x
-- Requests: `pip install requests`
+- pip
 - Github OAuth authentication token with the `repos` flag enabled (for actions that require user authentication)
 
 ## Installation
