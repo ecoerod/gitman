@@ -1,5 +1,6 @@
 import requests
 import os
+from subprocess import call
 
 def api_call(method, token=None):
     '''Sends an api call to github.com and returns the json contained.
@@ -68,3 +69,25 @@ def git_setup(*args, **kwargs):
         token = input('Github OAuth token: ')
         cf.write(token)
 
+
+def git_clone(token, args):
+    '''Clones a given repository.
+
+    Args:
+        token (str): Always passed by the main software, serves to identify the
+                     user in case it is not specified in the repo name.
+        args (argparse.Namespace): Contains the repo name as as argument passed
+                                   in the CLI.
+    Outputs:
+        Calls 'git' and clones the specified repository in the CWD.
+
+    '''
+    repo = args.repo
+    if len(args.repo.split('/')) == 1:
+        _, user_data = api_call("user", token)
+        repo = "{}/{}".format(user_data['login'], repo)
+    try:
+        call(['git', 'clone', 'https://github.com/{}'.format(repo)])
+    except FileNotFoundError:
+        print("You must have Git installed and available in your $PATH \
+        to clone a repository")

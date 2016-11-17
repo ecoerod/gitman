@@ -8,6 +8,7 @@ easily.
 Methods available:
     list - lists the repositories of the users
     setup - creates (or modifies) the Github OAuth token used by the program
+    clone - clones a specified repository
 
 Examples:
     $ python gitman.py list
@@ -15,14 +16,13 @@ Examples:
 
 TODO:
     - Create repository functionality.
-    - Clone repository functionality.
-
+    - Extract help strings for the parser into locale files.
 '''
 
 
 import os
 import argparse
-from git_functions import git_list, git_setup
+from git_functions import git_list, git_setup, git_clone
 
 
 if not os.path.exists(os.path.join(os.environ['HOME'], '.gitman')):
@@ -45,16 +45,22 @@ list_parser.add_argument('-u', '--user',
 # 'setup' method
 setup_parser = subparser.add_parser('setup', help='Setup user credentials.')
 
+# 'clone' parser
+clone_parser = subparser.add_parser('clone', help='Clones the specified repository.',
+                                    description='Gitman - Clone: clones the specified repository.')
+clone_parser.add_argument('repo', help='Repository to clone in the format <user>/<repo>. Defaults to the authenticated user if no <user> specified.') 
 
 # MAIN PROGRAM
 args = parser.parse_args()
 
 VALID_ARGS = {
     'list': git_list,
-    'setup': git_setup
+    'setup': git_setup,
+    'clone': git_clone
 }
 
 try:
     VALID_ARGS[args.method](GIT_TOKEN, args)
 except Exception as e:
+    e.with_traceback()
     parser.print_usage()
