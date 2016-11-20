@@ -1,6 +1,20 @@
 import requests
 import os
+import locale
+from importlib import import_module
 from subprocess import call
+
+
+def _localization():
+    try:
+        locale.setlocale(locale.LC_ALL, "")
+        return import_module(".{}".format(locale.getlocale()[0]),
+                             package="locales")
+    except ImportError:
+        return import_module(".us_EN", package="locales")
+
+loc = _localization()
+
 
 def api_call(method, token=None):
     '''Sends an api call to github.com and returns the json contained.
@@ -40,11 +54,11 @@ def git_list(token, args):
         status_code, repos_data = api_call('user/repos', token=token)
 
     if status_code == 200:
-        print('Repositories for user: {}'.format(repos_data[0]['owner']['login']))
+        print(loc.LIST_USERNAME.format(repos_data[0]['owner']['login']))
         for repo in repos_data:
             print('* {} - {}'.format(repo['full_name'], repo['description']))
     else:
-        print('User "{}" not found or not authorized.'.format(args.user))
+        print(loc.LIST_NOTFOUND.format(args.user))
 
 
 def git_setup(*args, **kwargs):
@@ -65,8 +79,8 @@ def git_setup(*args, **kwargs):
         token.
     '''
     with open(os.path.join(os.environ['HOME'], ".gitman"), "w") as cf:
-        print('Please provide your Github OAuth token with "repos" permission.')
-        token = input('Github OAuth token: ')
+        print(loc.SETUP_INSTRUCTIONS)
+        token = input(loc.SETUP_INPUT)
         cf.write(token)
 
 
@@ -89,5 +103,4 @@ def git_clone(token, args):
     try:
         call(['git', 'clone', 'https://github.com/{}'.format(repo)])
     except FileNotFoundError:
-        print("You must have Git installed and available in your $PATH \
-        to clone a repository")
+        print(loc.CLONE_NOTFOUND)

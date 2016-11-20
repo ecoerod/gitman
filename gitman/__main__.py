@@ -22,7 +22,7 @@ TODO:
 
 import os
 import argparse
-from .gitman import git_list, git_setup, git_clone
+from .gitman import git_list, git_setup, git_clone, loc
 
 
 def main():
@@ -32,24 +32,22 @@ def main():
         with open(os.path.join(os.environ['HOME'], '.gitman'), 'r') as cf:
             GIT_TOKEN = cf.readline()
 
-
     # Setup main parser
-    parser = argparse.ArgumentParser(description='Gitman - Github repository manager')
+    parser = argparse.ArgumentParser(description=loc.DESCRIPTION)
     subparser = parser.add_subparsers(dest="method")
 
     # 'list' method
-    list_parser = subparser.add_parser('list', help='List the repositories of the user.',
-                                       description='Gitman - List: list the repositories of the user')
-    list_parser.add_argument('-u', '--user',
-                             help='Targets a user in Github. Default: user configured by setup')
+    list_parser = subparser.add_parser('list', help=loc.LIST_HELP,
+                                       description=loc.LIST_DESCRIPTION)
+    list_parser.add_argument('-u', '--user', help=loc.LIST_USER_HELP)
 
     # 'setup' method
-    setup_parser = subparser.add_parser('setup', help='Setup user credentials.')
+    setup_parser = subparser.add_parser('setup', help=loc.SETUP_HELP)
 
     # 'clone' parser
-    clone_parser = subparser.add_parser('clone', help='Clones the specified repository.',
-                                        description='Gitman - Clone: clones the specified repository.')
-    clone_parser.add_argument('repo', help='Repository to clone in the format <user>/<repo>. Defaults to the authenticated user if no <user> specified.') 
+    clone_parser = subparser.add_parser('clone', help=loc.CLONE_HELP,
+                                        description=loc.CLONE_DESCRIPTION)
+    clone_parser.add_argument('repo', help=loc.CLONE_REPO_HELP) 
 
     # MAIN PROGRAM
     args = parser.parse_args()
