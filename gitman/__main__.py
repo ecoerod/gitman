@@ -16,7 +16,6 @@ Examples:
 
 TODO:
     - Create repository functionality.
-    - Extract help strings for the parser into locale files.
 '''
 
 
