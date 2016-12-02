@@ -21,7 +21,8 @@ TODO:
 
 import os
 import argparse
-from .gitman import git_list, git_setup, git_clone, loc
+import gitman
+from gitman.gitman import git_list, git_setup, git_clone, loc
 
 
 def main():
