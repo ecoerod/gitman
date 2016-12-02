@@ -22,7 +22,7 @@ TODO:
 import os
 import argparse
 import gitman
-from gitman.gitman import git_list, git_setup, git_clone, loc
+from .gitman import git_list, git_setup, git_clone, loc
 
 
 def main():

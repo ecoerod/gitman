@@ -9,9 +9,10 @@ from subprocess import call
 def _localization():
     try:
         locale.setlocale(locale.LC_ALL, "")
-        return import_module("gitman.locales.{}".format(locale.getlocale()[0]))
+        return import_module(".locales.{}".format(locale.getlocale()[0]),
+                             package="gitman")
     except ImportError:
-        return import_module("gitman.locales.us_EN")
+        return import_module(".locales.us_EN", package="gitman")
 
 loc = _localization()
 
