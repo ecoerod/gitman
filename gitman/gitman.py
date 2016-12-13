@@ -1,6 +1,7 @@
 import requests
 import os
 import locale
+#import locales
 from importlib import import_module
 from subprocess import call
 
@@ -8,10 +9,10 @@ from subprocess import call
 def _localization():
     try:
         locale.setlocale(locale.LC_ALL, "")
-        return import_module(".{}".format(locale.getlocale()[0]),
-                             package="locales")
+        return import_module(".locales.{}".format(locale.getlocale()[0]),
+                             package="gitman")
     except ImportError:
-        return import_module(".us_EN", package="locales")
+        return import_module(".locales.us_EN", package="gitman")
 
 loc = _localization()
 
