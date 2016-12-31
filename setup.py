@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='github-manager',
-    version='0.3.0',
+    version='0.4.0',
     description='Gitman - Simple CLI Github Repository Manager',
     url='https://github.com/Nelthorim/gitman',
     author='Eduardo Coello Rodriguez',

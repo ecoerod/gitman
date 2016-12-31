@@ -6,6 +6,7 @@ import json
 from sys import exit
 from importlib import import_module
 from subprocess import call
+from functools import partial
 
 
 # HELPER FUNCTIONS
@@ -13,17 +14,17 @@ def _localization():
     '''Returns a module object containing all the help strings according to the
        locale of the user'''
     try:
-        locale.setlocale(locale.LC_ALL, "")
-        return import_module(".locales.{}".format(locale.getlocale()[0]),
-                             package="gitman")
+        locale.setlocale(locale.LC_ALL, '')
+        return import_module('.locales.{}'.format(locale.getlocale()[0]),
+                             package='gitman')
     except ImportError:
-        return import_module(".locales.en_US", package="gitman")
+        return import_module('.locales.en_US', package='gitman')
 
 
 loc = _localization()
 
 
-def api_call(method, token=None):
+def api_call(method, token=None, verb=None):
     '''Sends an api call to github.com and returns the json contained.
 
     Args:
@@ -36,13 +37,17 @@ def api_call(method, token=None):
 
     if token:
         token = {'Authorization': 'token {}'.format(token)}
-    data = requests.get('https://api.github.com/{}'.format(method),
-                        headers=token)
+    data = verb('https://api.github.com/{}'.format(method),
+                headers=token)
     try:
         return data.status_code, data.json()
     except json.decoder.JSONDecodeError:
         print(loc.API_ERROR)
         exit(1)
+
+
+api_get = partial(api_call, verb=requests.get)
+api_post = partial(api_call, verb=requests.post)
 # END HELPER FUNCTIONS
 
 
@@ -71,9 +76,9 @@ def git_list(token, user):
     Outputs:
         The list of the repositories belonging to the user to stdin.'''
     if user:
-        status_code, repos_data = api_call('users/{}/repos'.format(user))
+        status_code, repos_data = api_get('users/{}/repos'.format(user))
     else:
-        status_code, repos_data = api_call('user/repos', token=token)
+        status_code, repos_data = api_get('user/repos', token=token)
 
     if status_code == 200:
         print(loc.LIST_USERNAME.format(repos_data[0]['owner']['login']))
@@ -98,7 +103,7 @@ def git_setup():
         - Maybe allow the user to delete his own repositories if given a valid
         token.
     '''
-    with open(os.path.join(os.environ['HOME'], ".gitman"), "w") as cf:
+    with open(os.path.join(os.environ['HOME'], '.gitman'), 'w') as cf:
         print(loc.SETUP_INSTRUCTIONS)
         token = input(loc.SETUP_INPUT)
         if not token.isspace():
@@ -125,13 +130,38 @@ def git_clone(token, repo, user):
 
     '''
     if len(repo.split('/')) == 1:
-        _, user_data = api_call("user", token)
-        repo = "{}/{}".format(user_data['login'], repo)
+        _, user_data = api_get('user', token)
+        repo = '{}/{}'.format(user_data['login'], repo)
     try:
         call(['git', 'clone', 'https://github.com/{}'.format(repo)])
     except FileNotFoundError:
         print(loc.CLONE_NOTFOUND)
 
 
-if __name__ == "__main__":
+@main.command(name='fork', help=loc.FORK_HELP)
+@click.pass_obj
+@click.argument('repo')
+def git_fork(token, repo):
+    '''Forks the repository of a user into the authenticated user.
+
+    Args:
+        token (str): Passed down by the main software, necessary to ID the user
+                     requesting the fork.
+        repo (str): In the format <username>/<repository>, targets the repo to
+                    fork.
+    '''
+    repo_data = repo.split('/')
+    if len(repo_data) != 2:
+        print(loc.FORK_SYNTAXERROR)
+        exit(1)
+    status_code, result = api_post('repos/{0}/forks'.format(repo), token)
+    if status_code == 202 and result['owner']['login'] != repo_data[0]:
+        print(loc.FORK_SUCCESS.format(result['full_name'], repo))
+    elif result['owner']['login'] == repo_data[0]:
+        print(loc.FORK_SELFERROR)
+    else:
+        print(loc.FORK_NOTFOUND.format(repo))
+
+
+if __name__ == '__main__':
     main()
