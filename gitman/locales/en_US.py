@@ -1,10 +1,10 @@
 DESCRIPTION = 'Gitman - Github repository manager'
-LIST_HELP = 'List the repositories of the user.'
+LIST_HELP = 'List the repositories of the user [USER], if present. Defaults \
+to the authenticated user.'
 SETUP_HELP = 'Setup user credentials in the form of a Github OAuth token.'
 CLONE_HELP = 'Clones the specified repository.\n\n\tREPO: the repository to \
 clone in the format <username?>/<repo_name>. Username defaults to the \
 authenticated user if no <user> specified.'
-USER_HELP = 'Targets a user in Github. Default: user configured by setup'
 FORK_HELP = 'Forks the given repository <username>/<repository> into your \
 authenticated account'
 

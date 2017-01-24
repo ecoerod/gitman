@@ -42,7 +42,7 @@ def api_call(method, token=None, verb=None):
     try:
         return data.status_code, data.json()
     except json.decoder.JSONDecodeError:
-        print(loc.API_ERROR)
+        click.echo(loc.API_ERROR)
         exit(1)
 
 
@@ -64,8 +64,7 @@ def main(ctx):
 
 @main.command(name='list', help=loc.LIST_HELP)
 @click.pass_obj
-@click.option('-u', '--user', help=loc.USER_HELP,
-              default=None)
+@click.argument('user', nargs=1, required=False)
 def git_list(token, user):
     '''Lists the repositories of a user.
 
@@ -81,11 +80,11 @@ def git_list(token, user):
         status_code, repos_data = api_get('user/repos', token=token)
 
     if status_code == 200:
-        print(loc.LIST_USERNAME.format(repos_data[0]['owner']['login']))
+        click.echo(loc.LIST_USERNAME.format(repos_data[0]['owner']['login']))
         for repo in repos_data:
-            print('* {} - {}'.format(repo['full_name'], repo['description']))
+            click.echo('* {} - {}'.format(repo['full_name'], repo['description']))
     else:
-        print(loc.LIST_NOTFOUND.format(user))
+        click.echo(loc.LIST_NOTFOUND.format(user))
 
 
 @main.command(name='setup', help=loc.SETUP_HELP)
@@ -104,12 +103,12 @@ def git_setup():
         token.
     '''
     with open(os.path.join(os.environ['HOME'], '.gitman'), 'w') as cf:
-        print(loc.SETUP_INSTRUCTIONS)
+        click.echo(loc.SETUP_INSTRUCTIONS)
         token = input(loc.SETUP_INPUT)
         if not token.isspace():
             cf.write(token)
         else:
-            print(loc.SETUP_CANCEL)
+            click.echo(loc.SETUP_CANCEL)
 
 
 @main.command(name='clone', help=loc.CLONE_HELP)
@@ -135,7 +134,7 @@ def git_clone(token, repo, user):
     try:
         call(['git', 'clone', 'https://github.com/{}'.format(repo)])
     except FileNotFoundError:
-        print(loc.CLONE_NOTFOUND)
+        click.echo(loc.CLONE_NOTFOUND)
 
 
 @main.command(name='fork', help=loc.FORK_HELP)
@@ -152,15 +151,15 @@ def git_fork(token, repo):
     '''
     repo_data = repo.split('/')
     if len(repo_data) != 2:
-        print(loc.FORK_SYNTAXERROR)
+        click.echo(loc.FORK_SYNTAXERROR)
         exit(1)
     status_code, result = api_post('repos/{0}/forks'.format(repo), token)
     if status_code == 202 and result['owner']['login'] != repo_data[0]:
-        print(loc.FORK_SUCCESS.format(result['full_name'], repo))
+        click.echo(loc.FORK_SUCCESS.format(result['full_name'], repo))
     elif result['owner']['login'] == repo_data[0]:
-        print(loc.FORK_SELFERROR)
+        click.echo(loc.FORK_SELFERROR)
     else:
-        print(loc.FORK_NOTFOUND.format(repo))
+        click.echo(loc.FORK_NOTFOUND.format(repo))
 
 
 if __name__ == '__main__':
