@@ -13,7 +13,9 @@ LIST_NOTFOUND = 'User "{}" not found or not authorized.'
 
 SETUP_INSTRUCTIONS = 'Please provide your Github OAuth token with "repos" \
 permission.'
-SETUP_INPUT = 'Github OAuth token: '
+SETUP_INPUT = 'Github OAuth token (Ctrl-C to abort)'
+SETUP_CONFIRM = 'This token will replace the existing one in $HOME/.gitman. \
+Proceed?'
 SETUP_CANCEL = 'Aborting setup.'
 
 CLONE_NOTFOUND = 'You must have Git installed and available in your $PATH to \

@@ -56,7 +56,7 @@ api_post = partial(api_call, verb=requests.post)
 def main(ctx):
     '''Entry point.'''
     if not os.path.exists(os.path.expanduser('~/.gitman')):
-        git_setup()
+        _git_setup()
 
     with open(os.path.join(os.environ['HOME'], '.gitman'), 'r') as cf:
         ctx.obj = cf.readline()
@@ -87,8 +87,7 @@ def git_list(token, user):
         click.echo(loc.LIST_NOTFOUND.format(user))
 
 
-@main.command(name='setup', help=loc.SETUP_HELP)
-def git_setup():
+def _git_setup():
     '''Stores the token provided by the user for future use.
 
     Inputs:
@@ -104,11 +103,14 @@ def git_setup():
     '''
     with open(os.path.expanduser('~/.gitman'), 'w') as cf:
         click.echo(loc.SETUP_INSTRUCTIONS)
-        token = input(loc.SETUP_INPUT)
-        if not token.isspace():
+        token = click.prompt(loc.SETUP_INPUT, type=str)
+        if click.confirm(loc.SETUP_CONFIRM, abort=True):
             cf.write(token)
-        else:
-            click.echo(loc.SETUP_CANCEL)
+
+@main.command(name='setup', help=loc.SETUP_HELP)
+def git_setup():
+    '''CLI wrapper for _git_setup.'''
+    _git_setup()
 
 
 @main.command(name='clone', help=loc.CLONE_HELP)
