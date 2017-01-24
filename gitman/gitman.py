@@ -55,7 +55,7 @@ api_post = partial(api_call, verb=requests.post)
 @click.pass_context
 def main(ctx):
     '''Entry point.'''
-    if not os.path.exists(os.path.join(os.environ['HOME'], '.gitman')):
+    if not os.path.exists(os.path.expanduser('~/.gitman')):
         git_setup()
 
     with open(os.path.join(os.environ['HOME'], '.gitman'), 'r') as cf:
@@ -102,7 +102,7 @@ def git_setup():
         - Maybe allow the user to delete his own repositories if given a valid
         token.
     '''
-    with open(os.path.join(os.environ['HOME'], '.gitman'), 'w') as cf:
+    with open(os.path.expanduser('~/.gitman'), 'w') as cf:
         click.echo(loc.SETUP_INSTRUCTIONS)
         token = input(loc.SETUP_INPUT)
         if not token.isspace():
