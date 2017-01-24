@@ -113,8 +113,7 @@ def git_setup():
 
 @main.command(name='clone', help=loc.CLONE_HELP)
 @click.pass_obj
-@click.argument('repo')
-@click.option('-u', '--user', help=loc.USER_HELP)
+@click.argument('repo', metavar='[USERNAME/]REPO')
 def git_clone(token, repo, user):
     '''Clones a given repository.
 
@@ -139,7 +138,7 @@ def git_clone(token, repo, user):
 
 @main.command(name='fork', help=loc.FORK_HELP)
 @click.pass_obj
-@click.argument('repo')
+@click.argument('repo', metavar='USERNAME/REPO')
 def git_fork(token, repo):
     '''Forks the repository of a user into the authenticated user.
 
