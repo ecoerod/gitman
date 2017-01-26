@@ -116,7 +116,7 @@ def git_setup():
 @main.command(name='clone', help=loc.CLONE_HELP)
 @click.pass_obj
 @click.argument('repo', metavar='[USERNAME/]REPO')
-def git_clone(token, repo, user):
+def git_clone(token, repo):
     '''Clones a given repository.
 
     Args:
